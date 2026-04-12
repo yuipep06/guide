@@ -157,14 +157,17 @@ fetch('captions.json')
     initSwiper();
   });
   
+let swiper;
+
 function initSwiper() {
 
-  const swiper = new Swiper('.swiper', {
+  if (swiper) swiper.destroy(true, true);
+
+  swiper = new Swiper('.swiper', {
     loop: false,
     centeredSlides: true,
     slidesPerView: 1,
     spaceBetween: 0,
-    speed: 300,
 
     on: {
       init: function () {
@@ -175,7 +178,7 @@ function initSwiper() {
       }
     }
   });
-
+}
   document.getElementById('prev').onclick = () => swiper.slidePrev();
   document.getElementById('next').onclick = () => swiper.slideNext();
 }
