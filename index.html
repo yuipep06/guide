@@ -23,7 +23,7 @@ html, body {
   flex-direction: column;
 }
 
-/* Swiper */
+/* スライダー */
 .swiper {
   flex: 1;
   width: 100%;
@@ -104,7 +104,7 @@ html, body {
 
     <div class="swiper-wrapper" id="slides"></div>
 
-    <div class="counter" id="counter">1 / 19</div>
+    <div class="counter" id="counter">1 / 1</div>
 
   </div>
 
@@ -115,65 +115,75 @@ html, body {
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 <script>
-const total = 19;
-
 let captions = [];
 
 const slides = document.getElementById('slides');
 const captionEl = document.getElementById('caption');
 const counterEl = document.getElementById('counter');
 
-/* スライド生成 */
-for (let i = 1; i <= total; i++) {
-  slides.innerHTML += `
-    <div class="swiper-slide">
-      <img src="root${i}.jpg" class="photo">
-    </div>
-  `;
-}
+/* =========================
+   スライド生成（JSON基準）
+========================= */
 
-/* Swiper */
-const swiper = new Swiper('.swiper', {
-  loop: false,
-  centeredSlides: true,
-  slidesPerView: 1.15,
-  spaceBetween: 10,
-  speed: 300,
-
-  on: {
-    init: function () {
-      updateUI(0);
-    },
-
-    realIndexChange: function () {
-      updateUI(this.realIndex);
-    }
-  }
-});
-
-/* JSON読み込み */
 fetch('captions.json')
   .then(res => res.json())
   .then(data => {
+
     captions = Array.isArray(data) ? data : [];
 
-    // 初期表示更新（Swiperより後でも安全）
-    updateUI(0);
+    // 画像も captions に合わせる（重要）
+    captions.forEach((_, i) => {
+      slides.innerHTML += `
+        <div class="swiper-slide">
+          <img src="root${i + 1}.jpg" class="photo">
+        </div>
+      `;
+    });
+
+    initSwiper();
   });
 
-/* UI更新を1本化（超重要） */
-function updateUI(i) {
+/* =========================
+   Swiper初期化
+========================= */
 
-  // 安全ガード
-  const text = captions[i] ?? "";
+function initSwiper() {
 
-  captionEl.innerHTML = text;
-  counterEl.textContent = `${i + 1} / ${total}`;
+  const swiper = new Swiper('.swiper', {
+    loop: false,
+    centeredSlides: true,
+    slidesPerView: 1.15,
+    spaceBetween: 10,
+    speed: 300,
+
+    on: {
+      init: function () {
+        updateUI(0);
+      },
+
+      realIndexChange: function () {
+        updateUI(this.realIndex);
+      }
+    }
+  });
+
+  /* 矢印 */
+  document.getElementById('prev').onclick = () => swiper.slidePrev();
+  document.getElementById('next').onclick = () => swiper.slideNext();
 }
 
-/* 矢印 */
-document.getElementById('prev').onclick = () => swiper.slidePrev();
-document.getElementById('next').onclick = () => swiper.slideNext();
+/* =========================
+   UI更新（完全統一）
+========================= */
+
+function updateUI(i) {
+
+  const len = captions.length;
+
+  captionEl.innerHTML = captions[i] ?? "";
+
+  counterEl.textContent = `${i + 1} / ${len}`;
+}
 </script>
 
 </body>
