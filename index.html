@@ -16,22 +16,30 @@ html, body {
   font-family: sans-serif;
 }
 
-/* 全画面 */
-.swiper {
+/* 全体レイアウト（画像＋説明） */
+.container {
   width: 100vw;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* スワイパー領域 */
+.swiper {
+  flex: 1;
+  width: 100%;
   position: relative;
 }
 
-/* スライド */
+/* 画像 */
 .photo {
   width: 100%;
-  height: 100vh;
-  object-fit: contain; /* ← 切れない */
+  height: 100%;
+  object-fit: contain;
   background: black;
 }
 
-/* チラ見せ＋中央強調 */
+/* チラ見せ */
 .swiper-slide {
   opacity: 0.4;
   transition: 0.3s;
@@ -41,20 +49,38 @@ html, body {
   opacity: 1;
 }
 
-/* 説明 */
-.caption {
+/* 矢印 */
+.nav-arrow {
   position: absolute;
-  bottom: 60px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 42px;
+  color: white;
+  z-index: 20;
+  opacity: 0.85;
+  text-shadow: 0 0 10px rgba(0,0,0,0.8);
+  cursor: pointer;
+}
+
+.nav-arrow.left {
+  left: 10px;
+}
+
+.nav-arrow.right {
+  right: 10px;
+}
+
+/* 説明欄（写真の外） */
+.caption-bar {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: white;
   font-size: 16px;
-  font-weight: bold;
-  padding: 10px 16px;
-  border-radius: 20px;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(4px);
-  max-width: 80%;
+  background: rgba(0,0,0,0.85);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding: 0 12px;
   text-align: center;
 }
 
@@ -62,41 +88,29 @@ html, body {
 .swiper-pagination-bullet {
   background: white;
 }
-
-/* ===== 矢印（重要）===== */
-.nav-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 40px;
-  color: white;
-  z-index: 20;
-  pointer-events: none;
-  opacity: 0.8;
-  text-shadow: 0 0 10px rgba(0,0,0,0.8);
-}
-
-/* 左右境界付近 */
-.nav-arrow.left {
-  left: 12px;
-}
-
-.nav-arrow.right {
-  right: 12px;
-}
 </style>
 </head>
 
 <body>
 
-<div class="swiper">
+<div class="container">
 
-  <!-- 矢印（境界ヒント） -->
-  <div class="nav-arrow left">＜</div>
-  <div class="nav-arrow right">＞</div>
+  <div class="swiper">
 
-  <div class="swiper-wrapper" id="slides"></div>
-  <div class="swiper-pagination"></div>
+    <!-- 矢印（クリック可能） -->
+    <div class="nav-arrow left" id="prev">＜</div>
+    <div class="nav-arrow right" id="next">＞</div>
+
+    <div class="swiper-wrapper" id="slides"></div>
+    <div class="swiper-pagination"></div>
+
+  </div>
+
+  <!-- 写真の外に説明 -->
+  <div class="caption-bar" id="caption">
+    スタート地点
+  </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -104,31 +118,47 @@ html, body {
 <script>
 const total = 19;
 const container = document.getElementById('slides');
+const caption = document.getElementById('caption');
 
+/* スライド生成 */
 for (let i = 1; i <= total; i++) {
-  const text = (i === total) ? "到着です！" : "";
-
   container.innerHTML += `
     <div class="swiper-slide">
-      <div class="slide">
-        <img src="root${i}.jpg" class="photo">
-        <div class="caption">${text}</div>
-      </div>
+      <img src="root${i}.jpg" class="photo">
     </div>
   `;
 }
 
-new Swiper('.swiper', {
+/* Swiper */
+const swiper = new Swiper('.swiper', {
   loop: false,
   centeredSlides: true,
-  slidesPerView: 1.15,  /* ← 中央＋チラ見せ */
+  slidesPerView: 1.15,
   spaceBetween: 10,
-  speed: 400,
+  speed: 300,
 
   pagination: {
     el: '.swiper-pagination',
     clickable: true
+  },
+
+  on: {
+    slideChange: function () {
+      const i = this.activeIndex + 1;
+      caption.textContent = (i === total)
+        ? "到着です！"
+        : `STEP ${i}`;
+    }
   }
+});
+
+/* 矢印クリックで移動 */
+document.getElementById('prev').addEventListener('click', () => {
+  swiper.slidePrev();
+});
+
+document.getElementById('next').addEventListener('click', () => {
+  swiper.slideNext();
 });
 </script>
 
