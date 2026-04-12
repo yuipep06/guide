@@ -84,36 +84,35 @@ html, body {
   text-align: center;
 }
 
-/* ===== 丸ポチ（潰れ対策・最終安定版）===== */
+/* ===== 丸ポチ（2段グリッド版）===== */
 
 .swiper-pagination {
-  display: flex;
-  flex-wrap: nowrap;
+  position: absolute;
+  bottom: 12px !important;
+
+  width: 100%;
+  display: grid;              /* ←ここが重要 */
+  grid-template-columns: repeat(10, auto); /* 1段目最大10個 */
+  grid-auto-rows: auto;
   justify-content: center;
-  align-items: center;
-  gap: 6px;
+  gap: 6px 6px;               /* ←縦横の間隔 */
 
-  bottom: 14px !important;
-
-  padding: 6px 0;          /* ←上下潰れ防止の核心 */
-  height: 24px;            /* ←高さを確保 */
-  overflow: visible;       /* ←潰れ防止 */
+  padding: 6px 10px;
 }
 
 /* 通常 */
 .swiper-pagination-bullet {
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
   background: #c7a86b;
   opacity: 0.35;
 
-  width: 7px;
-  height: 7px;
-
-  border-radius: 50%;
   border: 1.5px solid rgba(255,255,255,0.9);
-
   box-shadow: 0 0 4px rgba(0,0,0,0.12);
 
-  transform: scale(1);     /* ←初期スケール固定 */
+  flex: none;
 }
 
 /* 現在地 */
@@ -121,12 +120,9 @@ html, body {
   background: #a8864a;
   opacity: 1;
 
-  width: 7px;
-  height: 7px;
-
   border: 2px solid #ffffff;
+  transform: scale(1.2);
 
-  transform: scale(1.25);  /* ←拡大はここだけ */
   box-shadow: 0 0 8px rgba(0,0,0,0.2);
 }
 </style>
