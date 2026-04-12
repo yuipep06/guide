@@ -84,41 +84,49 @@ html, body {
   text-align: center;
 }
 
-/* ===== 丸ポチ（ベスト設計版）===== */
+/* ===== 丸ポチ（潰れ対策・最終安定版）===== */
 
-/* 全体（折り返し防止） */
 .swiper-pagination {
   display: flex;
-  flex-wrap: nowrap;      /* 2段防止 */
+  flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
 
-  bottom: 12px !important;
-  overflow: hidden;       /* はみ出し防止 */
+  bottom: 14px !important;
+
+  padding: 6px 0;          /* ←上下潰れ防止の核心 */
+  height: 24px;            /* ←高さを確保 */
+  overflow: visible;       /* ←潰れ防止 */
 }
 
 /* 通常 */
 .swiper-pagination-bullet {
-  background: #c7a86b; /* 金色 */
+  background: #c7a86b;
   opacity: 0.35;
 
-  width: 7px;   /* ←小さくして収める */
+  width: 7px;
   height: 7px;
 
-  border: 1.5px solid rgba(255,255,255,0.9); /* 縁取り */
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.9);
+
   box-shadow: 0 0 4px rgba(0,0,0,0.12);
 
-  transition: transform 0.2s, opacity 0.2s;
+  transform: scale(1);     /* ←初期スケール固定 */
 }
 
 /* 現在地 */
 .swiper-pagination-bullet-active {
-  background: #a8864a; /* 濃い金 */
+  background: #a8864a;
   opacity: 1;
 
-  border: 2px solid #ffffff; /* 強調縁 */
-  transform: scale(1.3); /* 少し大きく */
+  width: 7px;
+  height: 7px;
+
+  border: 2px solid #ffffff;
+
+  transform: scale(1.25);  /* ←拡大はここだけ */
   box-shadow: 0 0 8px rgba(0,0,0,0.2);
 }
 </style>
