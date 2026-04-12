@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +18,7 @@ html, body {
   overflow: hidden;
 }
 
-/* ===== Layout Fix ===== */
+/* ===== Layout ===== */
 .container {
   position: fixed;
   inset: 0;
@@ -28,7 +28,7 @@ html, body {
   min-height: 0;
 }
 
-/* ===== Swiper Fix ===== */
+/* ===== Swiper ===== */
 .swiper {
   flex: 1;
   width: 100%;
@@ -64,7 +64,7 @@ html, body {
 .nav-arrow.left { left: 10px; }
 .nav-arrow.right { right: 10px; }
 
-/* ===== Caption (2-line clamp) ===== */
+/* ===== Caption (NO <br>, auto wrap, 2-line clamp) ===== */
 .caption-bar {
   height: 70px;
   padding: 6px 12px;
@@ -72,14 +72,23 @@ html, body {
   background: rgba(255,255,255,0.95);
   border-top: 1px solid rgba(0,0,0,0.08);
 
-  overflow: hidden;
+  line-height: 1.4;
 
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 
-  line-height: 1.4;
+  overflow: hidden;
+
+  /* natural wrapping */
+  white-space: normal;
   word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Safari tweak */
+.safari .caption-bar {
+  line-height: 1.35;
 }
 
 /* ===== Counter ===== */
@@ -126,13 +135,26 @@ const slides = document.getElementById('slides');
 const captionEl = document.getElementById('caption');
 const counterEl = document.getElementById('counter');
 
-/* ===== UI Update ===== */
+/* Safari detect */
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+if (isSafari) {
+  document.documentElement.classList.add("safari");
+}
+
+/* UI update */
 function updateUI(i) {
-  captionEl.innerHTML = captions[i] ?? "";
+
+  // iOS/Safari redraw safety
+  captionEl.textContent = "";
+
+  requestAnimationFrame(() => {
+    captionEl.textContent = captions[i] ?? "";
+  });
+
   counterEl.textContent = `${i + 1} / ${captions.length || 0}`;
 }
 
-/* ===== Build Slides ===== */
+/* build slides */
 function buildSlides(len) {
   slides.innerHTML = "";
 
@@ -149,7 +171,7 @@ function buildSlides(len) {
   }
 }
 
-/* ===== Swiper Init ===== */
+/* swiper init */
 function initSwiper() {
 
   if (swiper) swiper.destroy(true, true);
@@ -174,7 +196,7 @@ function initSwiper() {
   document.getElementById('next').onclick = () => swiper.slideNext();
 }
 
-/* ===== Load JSON ===== */
+/* load JSON */
 fetch('captions.json')
   .then(res => {
     if (!res.ok) throw new Error("JSON not found");
@@ -191,7 +213,7 @@ fetch('captions.json')
   })
   .catch(err => {
     console.error(err);
-    captionEl.innerHTML = "Error loading captions.json";
+    captionEl.textContent = "Error loading captions.json";
   });
 
 </script>
