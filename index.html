@@ -165,7 +165,7 @@ fetch('captions.json')
   .then(res => res.json())
   .then(data => {
     captions = data;
-    caption.textContent = captions[0] || '';
+    caption.innerHTML = captions[i];
   });
 
 /* Swiper */
