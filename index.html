@@ -74,17 +74,18 @@ html, body {
   font-size: 16px;
   color: #333;
 
-  background: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.9);
   border-top: 1px solid rgba(0,0,0,0.08);
 }
 
-/* ===== 丸ポチ（安定2段＋千鳥）===== */
+/* ===== 丸ポチ（安定2段版・千鳥なし）===== */
 
 .swiper-pagination {
   position: absolute;
   bottom: 10px !important;
 
   width: 100%;
+
   display: grid;
   grid-template-columns: repeat(10, auto);
 
@@ -103,6 +104,7 @@ html, body {
   background: #c7a86b;
   opacity: 0.35;
   border: 1.5px solid rgba(255,255,255,0.9);
+  transition: transform 0.2s ease;
 }
 
 .swiper-pagination-bullet-active {
@@ -110,11 +112,6 @@ html, body {
   opacity: 1;
   border: 2px solid #fff;
   transform: scale(1.25);
-}
-
-/* 千鳥 */
-.swiper-pagination-bullet:nth-child(n+11) {
-  transform: translateX(10px);
 }
 </style>
 </head>
@@ -179,14 +176,14 @@ const swiper = new Swiper('.swiper', {
   },
 
   on: {
-  slideChange: function () {
-    const i = this.realIndex;
+    slideChange: function () {
+      const i = this.realIndex;
 
-    if (captions[i]) {
-      caption.innerHTML = captions[i];
+      if (captions[i]) {
+        caption.innerHTML = captions[i];
+      }
     }
   }
-}
 });
 
 /* 矢印 */
