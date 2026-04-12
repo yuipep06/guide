@@ -14,29 +14,36 @@ html, body {
   padding: 0;
   background: #f7f5f0;
   font-family: sans-serif;
+
+  /* ★重要：スクロール制御 */
+  height: 100%;
+  overflow: hidden;
 }
 
+/* ★重要：固定レイアウト */
 .container {
-  width: 100vw;
-  height: 100vh;
+  position: fixed;
+  inset: 0;
   display: flex;
   flex-direction: column;
 }
 
-/* スライダー */
+/* ★重要：高さ明示 */
 .swiper {
-  flex: 1;
   width: 100%;
+  height: calc(100% - 70px);
   position: relative;
 }
 
+.swiper-wrapper,
 .swiper-slide {
-  opacity: 0.4;
-  transition: 0.3s;
+  height: 100%;
 }
 
-.swiper-slide-active {
-  opacity: 1;
+.swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .photo {
@@ -71,8 +78,11 @@ html, body {
   font-size: 16px;
   color: #333;
 
-  background: rgba(255,255,255,0.92);
+  background: rgba(255,255,255,0.95);
   border-top: 1px solid rgba(0,0,0,0.08);
+
+  /* ★重要：固定 */
+  flex-shrink: 0;
 }
 
 /* 数値 */
@@ -89,6 +99,7 @@ html, body {
   border-radius: 20px;
 
   font-size: 14px;
+  z-index: 50;
 }
 </style>
 </head>
@@ -121,17 +132,13 @@ const slides = document.getElementById('slides');
 const captionEl = document.getElementById('caption');
 const counterEl = document.getElementById('counter');
 
-/* =========================
-   スライド生成（JSON基準）
-========================= */
-
+/* JSON読み込み */
 fetch('captions.json')
   .then(res => res.json())
   .then(data => {
 
     captions = Array.isArray(data) ? data : [];
 
-    // 画像も captions に合わせる（重要）
     captions.forEach((_, i) => {
       slides.innerHTML += `
         <div class="swiper-slide">
@@ -143,46 +150,32 @@ fetch('captions.json')
     initSwiper();
   });
 
-/* =========================
-   Swiper初期化
-========================= */
-
 function initSwiper() {
 
   const swiper = new Swiper('.swiper', {
     loop: false,
     centeredSlides: true,
-    slidesPerView: 1.15,
-    spaceBetween: 10,
+    slidesPerView: 1,
+    spaceBetween: 0,
     speed: 300,
 
     on: {
       init: function () {
         updateUI(0);
       },
-
       realIndexChange: function () {
         updateUI(this.realIndex);
       }
     }
   });
 
-  /* 矢印 */
   document.getElementById('prev').onclick = () => swiper.slidePrev();
   document.getElementById('next').onclick = () => swiper.slideNext();
 }
 
-/* =========================
-   UI更新（完全統一）
-========================= */
-
 function updateUI(i) {
-
-  const len = captions.length;
-
   captionEl.innerHTML = captions[i] ?? "";
-
-  counterEl.textContent = `${i + 1} / ${len}`;
+  counterEl.textContent = `${i + 1} / ${captions.length}`;
 }
 </script>
 
