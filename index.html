@@ -84,20 +84,23 @@ html, body {
   text-align: center;
 }
 
-/* ===== 丸ポチ（2段グリッド版）===== */
+/* ===== 丸ポチ（2段グリッド・最終調整版）===== */
 
 .swiper-pagination {
   position: absolute;
-  bottom: 12px !important;
+  bottom: 10px !important;
 
   width: 100%;
-  display: grid;              /* ←ここが重要 */
-  grid-template-columns: repeat(10, auto); /* 1段目最大10個 */
-  grid-auto-rows: auto;
-  justify-content: center;
-  gap: 6px 6px;               /* ←縦横の間隔 */
 
-  padding: 6px 10px;
+  display: grid;
+  grid-template-columns: repeat(10, auto); /* 10 + 9で2段 */
+  justify-content: center;   /* ←横中央寄せ */
+  align-content: center;     /* ←縦中央寄せ */
+
+  gap: 10px 8px;             /* ←余白（縦 横） */
+
+  padding: 8px 12px;        /* ←外側余白（重要） */
+  box-sizing: border-box;
 }
 
 /* 通常 */
@@ -121,8 +124,8 @@ html, body {
   opacity: 1;
 
   border: 2px solid #ffffff;
-  transform: scale(1.2);
 
+  transform: scale(1.25);
   box-shadow: 0 0 8px rgba(0,0,0,0.2);
 }
 </style>
