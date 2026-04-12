@@ -84,18 +84,32 @@ html, body {
   text-align: center;
 }
 
-/* ===== 丸ポチ（強化版）===== */
+/* ===== 丸ポチ（ベスト設計版）===== */
+
+/* 全体（折り返し防止） */
+.swiper-pagination {
+  display: flex;
+  flex-wrap: nowrap;      /* 2段防止 */
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+
+  bottom: 12px !important;
+  overflow: hidden;       /* はみ出し防止 */
+}
 
 /* 通常 */
 .swiper-pagination-bullet {
   background: #c7a86b; /* 金色 */
-  opacity: 0.4;
+  opacity: 0.35;
 
-  width: 10px;
-  height: 10px;
+  width: 7px;   /* ←小さくして収める */
+  height: 7px;
 
-  border: 2px solid rgba(255,255,255,0.9); /* 縁取り */
-  box-shadow: 0 0 6px rgba(0,0,0,0.15);
+  border: 1.5px solid rgba(255,255,255,0.9); /* 縁取り */
+  box-shadow: 0 0 4px rgba(0,0,0,0.12);
+
+  transition: transform 0.2s, opacity 0.2s;
 }
 
 /* 現在地 */
@@ -104,8 +118,8 @@ html, body {
   opacity: 1;
 
   border: 2px solid #ffffff; /* 強調縁 */
-  transform: scale(1.25); /* 少し大きく */
-  box-shadow: 0 0 10px rgba(0,0,0,0.25);
+  transform: scale(1.3); /* 少し大きく */
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
 }
 </style>
 </head>
