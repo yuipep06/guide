@@ -16,6 +16,7 @@ html, body {
   font-family: sans-serif;
 }
 
+/* 全画面 */
 .swiper {
   width: 100vw;
   height: 100vh;
@@ -23,20 +24,16 @@ html, body {
 }
 
 /* スライド */
-.slide {
-  position: relative;
-}
-
 .photo {
   width: 100%;
   height: 100vh;
-  object-fit: contain; /* ← cover → contain に変更 */
+  object-fit: contain; /* ← 切れない */
   background: black;
 }
 
-/* 中央強調 */
+/* チラ見せ＋中央強調 */
 .swiper-slide {
-  opacity: 0.5;
+  opacity: 0.4;
   transition: 0.3s;
 }
 
@@ -44,7 +41,7 @@ html, body {
   opacity: 1;
 }
 
-/* 説明テキスト（見やすく改善） */
+/* 説明 */
 .caption {
   position: absolute;
   bottom: 60px;
@@ -61,31 +58,31 @@ html, body {
   text-align: center;
 }
 
-/* ページドット */
+/* ドット */
 .swiper-pagination-bullet {
   background: white;
 }
 
-/* 左右矢印（ヒント） */
+/* ===== 矢印（重要）===== */
 .nav-arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 26px;
+  font-size: 40px;
   color: white;
-  background: rgba(0,0,0,0.5);
-  padding: 10px 14px;
-  border-radius: 50%;
-  z-index: 10;
+  z-index: 20;
   pointer-events: none;
+  opacity: 0.8;
+  text-shadow: 0 0 10px rgba(0,0,0,0.8);
 }
 
+/* 左右境界付近 */
 .nav-arrow.left {
-  left: 10px;
+  left: 12px;
 }
 
 .nav-arrow.right {
-  right: 10px;
+  right: 12px;
 }
 </style>
 </head>
@@ -94,13 +91,12 @@ html, body {
 
 <div class="swiper">
 
-  <!-- 矢印ヒント -->
-  <div class="nav-arrow left">←</div>
-  <div class="nav-arrow right">→</div>
+  <!-- 矢印（境界ヒント） -->
+  <div class="nav-arrow left">＜</div>
+  <div class="nav-arrow right">＞</div>
 
   <div class="swiper-wrapper" id="slides"></div>
   <div class="swiper-pagination"></div>
-
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -125,8 +121,8 @@ for (let i = 1; i <= total; i++) {
 new Swiper('.swiper', {
   loop: false,
   centeredSlides: true,
-  slidesPerView: 1.3,
-  spaceBetween: 12,
+  slidesPerView: 1.15,  /* ← 中央＋チラ見せ */
+  spaceBetween: 10,
   speed: 400,
 
   pagination: {
