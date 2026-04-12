@@ -23,7 +23,7 @@ html, body {
   flex-direction: column;
 }
 
-/* スライダー */
+/* Swiper */
 .swiper {
   flex: 1;
   width: 100%;
@@ -71,12 +71,11 @@ html, body {
   font-size: 16px;
   color: #333;
 
-  background: rgba(255,255,255,0.9);
+  background: rgba(255,255,255,0.92);
   border-top: 1px solid rgba(0,0,0,0.08);
 }
 
-/* ===== 数値インジケーター ===== */
-
+/* 数値 */
 .counter {
   position: absolute;
   bottom: 12px;
@@ -90,7 +89,6 @@ html, body {
   border-radius: 20px;
 
   font-size: 14px;
-  letter-spacing: 1px;
 }
 </style>
 </head>
@@ -106,14 +104,11 @@ html, body {
 
     <div class="swiper-wrapper" id="slides"></div>
 
-    <!-- 数値表示 -->
     <div class="counter" id="counter">1 / 19</div>
 
   </div>
 
-  <div class="caption-bar" id="caption">
-    読み込み中...
-  </div>
+  <div class="caption-bar" id="caption">読み込み中...</div>
 
 </div>
 
@@ -137,14 +132,6 @@ for (let i = 1; i <= total; i++) {
   `;
 }
 
-/* JSON読み込み */
-fetch('captions.json')
-  .then(res => res.json())
-  .then(data => {
-    captions = data;
-    captionEl.innerHTML = captions[0] ?? "";
-  });
-
 /* Swiper */
 const swiper = new Swiper('.swiper', {
   loop: false,
@@ -154,17 +141,35 @@ const swiper = new Swiper('.swiper', {
   speed: 300,
 
   on: {
-    slideChange: function () {
-      const i = this.realIndex;
+    init: function () {
+      updateUI(0);
+    },
 
-      // 説明
-      captionEl.innerHTML = captions[i] ?? "";
-
-      // 数値表示
-      counterEl.textContent = `${i + 1} / ${total}`;
+    realIndexChange: function () {
+      updateUI(this.realIndex);
     }
   }
 });
+
+/* JSON読み込み */
+fetch('captions.json')
+  .then(res => res.json())
+  .then(data => {
+    captions = Array.isArray(data) ? data : [];
+
+    // 初期表示更新（Swiperより後でも安全）
+    updateUI(0);
+  });
+
+/* UI更新を1本化（超重要） */
+function updateUI(i) {
+
+  // 安全ガード
+  const text = captions[i] ?? "";
+
+  captionEl.innerHTML = text;
+  counterEl.textContent = `${i + 1} / ${total}`;
+}
 
 /* 矢印 */
 document.getElementById('prev').onclick = () => swiper.slidePrev();
