@@ -139,17 +139,24 @@ fetch('captions.json')
 
     captions = Array.isArray(data) ? data : [];
 
+    // ★重要：初期化前に必ずクリア
+    slides.innerHTML = "";
+
     captions.forEach((_, i) => {
-      slides.innerHTML += `
-        <div class="swiper-slide">
-          <img src="root${i + 1}.jpg" class="photo">
-        </div>
-      `;
+      const slide = document.createElement('div');
+      slide.className = 'swiper-slide';
+
+      const img = document.createElement('img');
+      img.src = `root${i + 1}.jpg`;
+      img.className = 'photo';
+
+      slide.appendChild(img);
+      slides.appendChild(slide);
     });
 
     initSwiper();
   });
-
+  
 function initSwiper() {
 
   const swiper = new Swiper('.swiper', {
