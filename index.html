@@ -9,6 +9,9 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
 
 <style>
+/* =========================
+   BASE RESET
+========================= */
 html, body {
   margin: 0;
   padding: 0;
@@ -18,22 +21,18 @@ html, body {
   overflow: hidden;
 }
 
-/* ===== Layout ===== */
-.container {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 0;
-}
-
-/* ===== Swiper ===== */
+/* =========================
+   SWIPER AREA (isolated)
+========================= */
 .swiper {
-  flex: 1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 90px; /* caption + margin reserved */
   width: 100%;
-  min-height: 0;
   overflow: hidden;
+  background: #f7f5f0;
 }
 
 .swiper-slide {
@@ -49,14 +48,16 @@ html, body {
   background: #f7f5f0;
 }
 
-/* ===== Arrows ===== */
+/* =========================
+   NAV ARROWS (fixed overlay)
+========================= */
 .nav-arrow {
-  position: absolute;
+  position: fixed;
   top: 50%;
   transform: translateY(-50%);
   font-size: 42px;
   color: #c7a86b;
-  z-index: 10;
+  z-index: 9999;
   cursor: pointer;
   user-select: none;
 }
@@ -64,26 +65,30 @@ html, body {
 .nav-arrow.left { left: 10px; }
 .nav-arrow.right { right: 10px; }
 
-/* ===== Caption (NO <br>, auto wrap, 2-line clamp) ===== */
+/* =========================
+   CAPTION (fixed layer)
+========================= */
 .caption-bar {
-  height: 70px;
-  padding: 6px 12px;
-  font-size: 16px;
-  background: rgba(255,255,255,0.95);
-  border-top: 1px solid rgba(0,0,0,0.08);
-
-  line-height: 1.4;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 30px;
+  height: 60px;
 
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 
-  overflow: hidden;
+  padding: 6px 12px;
+  font-size: 16px;
+  line-height: 1.4;
 
-  /* natural wrapping */
-  white-space: normal;
+  background: rgba(255,255,255,0.95);
+  border-top: 1px solid rgba(0,0,0,0.08);
+
+  overflow: hidden;
   word-break: break-word;
-  overflow-wrap: anywhere;
+  z-index: 9998;
 }
 
 /* Safari tweak */
@@ -91,39 +96,48 @@ html, body {
   line-height: 1.35;
 }
 
-/* ===== Counter ===== */
+/* =========================
+   COUNTER (fixed safe layer)
+========================= */
 .counter {
-  position: absolute;
-  bottom: 12px;
+  position: fixed;
+  bottom: 5px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0,0,0,0.6);
+
+  background: rgba(0,0,0,0.7);
   color: #fff;
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 14px;
+
+  z-index: 9999;
+}
+
+/* =========================
+   SAFE AREA (iPhone notch)
+========================= */
+@supports (padding: max(0px)) {
+  .caption-bar {
+    padding-bottom: max(6px, env(safe-area-inset-bottom));
+  }
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-
-  <div class="swiper">
-
-    <div class="nav-arrow left" id="prev">‹</div>
-    <div class="nav-arrow right" id="next">›</div>
-
-    <div class="swiper-wrapper" id="slides"></div>
-
-    <div class="counter" id="counter">- / -</div>
-
-  </div>
-
-  <div class="caption-bar" id="caption">Loading...</div>
-
+<!-- Swiper -->
+<div class="swiper">
+  <div class="swiper-wrapper" id="slides"></div>
 </div>
+
+<!-- UI LAYER -->
+<div class="nav-arrow left" id="prev">‹</div>
+<div class="nav-arrow right" id="next">›</div>
+
+<div class="caption-bar" id="caption">Loading...</div>
+<div class="counter" id="counter">- / -</div>
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
@@ -141,10 +155,11 @@ if (isSafari) {
   document.documentElement.classList.add("safari");
 }
 
-/* UI update */
+/* =========================
+   UI UPDATE (safe render)
+========================= */
 function updateUI(i) {
 
-  // iOS/Safari redraw safety
   captionEl.textContent = "";
 
   requestAnimationFrame(() => {
@@ -154,7 +169,9 @@ function updateUI(i) {
   counterEl.textContent = `${i + 1} / ${captions.length || 0}`;
 }
 
-/* build slides */
+/* =========================
+   SLIDES
+========================= */
 function buildSlides(len) {
   slides.innerHTML = "";
 
@@ -171,7 +188,9 @@ function buildSlides(len) {
   }
 }
 
-/* swiper init */
+/* =========================
+   SWIPER INIT
+========================= */
 function initSwiper() {
 
   if (swiper) swiper.destroy(true, true);
@@ -196,7 +215,9 @@ function initSwiper() {
   document.getElementById('next').onclick = () => swiper.slideNext();
 }
 
-/* load JSON */
+/* =========================
+   LOAD JSON
+========================= */
 fetch('captions.json')
   .then(res => {
     if (!res.ok) throw new Error("JSON not found");
