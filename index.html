@@ -19,8 +19,10 @@ html, body {
 .swiper {
   width: 100vw;
   height: 100vh;
+  position: relative;
 }
 
+/* スライド */
 .slide {
   position: relative;
 }
@@ -29,21 +31,61 @@ html, body {
   width: 100%;
   height: 100vh;
   object-fit: cover;
+  border-radius: 12px;
 }
 
+/* 中央強調 */
+.swiper-slide {
+  opacity: 0.5;
+  transition: 0.3s;
+}
+
+.swiper-slide-active {
+  opacity: 1;
+}
+
+/* 説明テキスト（見やすく改善） */
 .caption {
   position: absolute;
-  bottom: 0;
-  width: 100%;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
   color: white;
-  font-size: 14px;
-  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px 16px;
+  border-radius: 20px;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  max-width: 80%;
   text-align: center;
-  background: rgba(0,0,0,0.4);
 }
 
+/* ページドット */
 .swiper-pagination-bullet {
   background: white;
+}
+
+/* 左右矢印（ヒント） */
+.nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 26px;
+  color: white;
+  background: rgba(0,0,0,0.5);
+  padding: 10px 14px;
+  border-radius: 50%;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.nav-arrow.left {
+  left: 10px;
+}
+
+.nav-arrow.right {
+  right: 10px;
 }
 </style>
 </head>
@@ -51,8 +93,14 @@ html, body {
 <body>
 
 <div class="swiper">
+
+  <!-- 矢印ヒント -->
+  <div class="nav-arrow left">←</div>
+  <div class="nav-arrow right">→</div>
+
   <div class="swiper-wrapper" id="slides"></div>
   <div class="swiper-pagination"></div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -63,7 +111,7 @@ const container = document.getElementById('slides');
 
 for (let i = 1; i <= total; i++) {
   const text = (i === total) ? "到着です！" : "";
-  
+
   container.innerHTML += `
     <div class="swiper-slide">
       <div class="slide">
@@ -76,7 +124,11 @@ for (let i = 1; i <= total; i++) {
 
 new Swiper('.swiper', {
   loop: false,
+  centeredSlides: true,
+  slidesPerView: 1.3,
+  spaceBetween: 12,
   speed: 400,
+
   pagination: {
     el: '.swiper-pagination',
     clickable: true
