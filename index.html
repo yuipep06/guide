@@ -12,11 +12,11 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: #f7f5f0;
+  background: #f7f5f0; /* 結婚式向けオフホワイト */
   font-family: sans-serif;
 }
 
-/* 全体レイアウト（画像＋説明） */
+/* 全体 */
 .container {
   width: 100vw;
   height: 100vh;
@@ -24,7 +24,7 @@ html, body {
   flex-direction: column;
 }
 
-/* スワイパー領域 */
+/* スライダー領域 */
 .swiper {
   flex: 1;
   width: 100%;
@@ -55,10 +55,10 @@ html, body {
   top: 50%;
   transform: translateY(-50%);
   font-size: 42px;
-  color: white;
+  color: #c7a86b; /* ゴールド */
   z-index: 20;
-  opacity: 0.85;
-  text-shadow: 0 0 10px rgba(0,0,0,0.8);
+  opacity: 0.9;
+  text-shadow: 0 0 6px rgba(0,0,0,0.2);
   cursor: pointer;
 }
 
@@ -70,24 +70,42 @@ html, body {
   right: 10px;
 }
 
-/* 説明欄（写真の外） */
+/* 説明欄（下部） */
 .caption-bar {
   height: 70px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #333;
   font-size: 16px;
-  background: rgba(0,0,0,0.85);
-  border-top: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.85);
+  border-top: 1px solid rgba(0,0,0,0.08);
   padding: 0 12px;
   text-align: center;
 }
 
-/* ドット */
+/* ===== 丸ポチ（強化版）===== */
+
+/* 通常 */
 .swiper-pagination-bullet {
-  background: #c7a86b; /* ゴールド系（おすすめ） */
-  opacity: 0.7;
+  background: #c7a86b; /* 金色 */
+  opacity: 0.4;
+
+  width: 10px;
+  height: 10px;
+
+  border: 2px solid rgba(255,255,255,0.9); /* 縁取り */
+  box-shadow: 0 0 6px rgba(0,0,0,0.15);
+}
+
+/* 現在地 */
+.swiper-pagination-bullet-active {
+  background: #a8864a; /* 濃い金 */
+  opacity: 1;
+
+  border: 2px solid #ffffff; /* 強調縁 */
+  transform: scale(1.25); /* 少し大きく */
+  box-shadow: 0 0 10px rgba(0,0,0,0.25);
 }
 </style>
 </head>
@@ -98,7 +116,7 @@ html, body {
 
   <div class="swiper">
 
-    <!-- 矢印（クリック可能） -->
+    <!-- 矢印 -->
     <div class="nav-arrow left" id="prev">＜</div>
     <div class="nav-arrow right" id="next">＞</div>
 
@@ -107,7 +125,7 @@ html, body {
 
   </div>
 
-  <!-- 写真の外に説明 -->
+  <!-- 説明（外側） -->
   <div class="caption-bar" id="caption">
     スタート地点
   </div>
@@ -153,7 +171,7 @@ const swiper = new Swiper('.swiper', {
   }
 });
 
-/* 矢印クリックで移動 */
+/* 矢印クリック */
 document.getElementById('prev').addEventListener('click', () => {
   swiper.slidePrev();
 });
