@@ -75,35 +75,22 @@ html, body {
   border-top: 1px solid rgba(0,0,0,0.08);
 }
 
-/* ページネーション（安全版：flex） */
-.swiper-pagination {
+/* ===== 数値インジケーター ===== */
+
+.counter {
   position: absolute;
-  bottom: 10px !important;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
 
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
 
-  justify-content: center;
-  gap: 8px;
-  padding: 8px 12px;
-  box-sizing: border-box;
-}
+  padding: 6px 14px;
+  border-radius: 20px;
 
-.swiper-pagination-bullet {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #c7a86b;
-  opacity: 0.35;
-  border: 1.5px solid rgba(255,255,255,0.9);
-  flex: 0 0 auto;
-}
-
-.swiper-pagination-bullet-active {
-  background: #a8864a;
-  opacity: 1;
-  transform: scale(1.25);
+  font-size: 14px;
+  letter-spacing: 1px;
 }
 </style>
 </head>
@@ -118,7 +105,9 @@ html, body {
     <div class="nav-arrow right" id="next">＞</div>
 
     <div class="swiper-wrapper" id="slides"></div>
-    <div class="swiper-pagination"></div>
+
+    <!-- 数値表示 -->
+    <div class="counter" id="counter">1 / 19</div>
 
   </div>
 
@@ -134,10 +123,12 @@ html, body {
 const total = 19;
 
 let captions = [];
-const captionEl = document.getElementById('caption');
-const slides = document.getElementById('slides');
 
-/* 画像生成 */
+const slides = document.getElementById('slides');
+const captionEl = document.getElementById('caption');
+const counterEl = document.getElementById('counter');
+
+/* スライド生成 */
 for (let i = 1; i <= total; i++) {
   slides.innerHTML += `
     <div class="swiper-slide">
@@ -162,19 +153,15 @@ const swiper = new Swiper('.swiper', {
   spaceBetween: 10,
   speed: 300,
 
-  pagination: {
-    el: '.swiper-pagination',
-    clickable: true
-  },
-
   on: {
     slideChange: function () {
       const i = this.realIndex;
 
-      // ★安全ガード（ズレ防止）
-      if (!captions || !captions.length) return;
-
+      // 説明
       captionEl.innerHTML = captions[i] ?? "";
+
+      // 数値表示
+      counterEl.textContent = `${i + 1} / ${total}`;
     }
   }
 });
