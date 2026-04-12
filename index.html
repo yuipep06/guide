@@ -19,7 +19,7 @@ html, body {
 }
 
 /* =========================
-   LAYOUT (3段構造)
+   MAIN LAYOUT
 ========================= */
 .container {
   position: fixed;
@@ -29,10 +29,10 @@ html, body {
 }
 
 /* =========================
-   PHOTO AREA（大きめ）
+   PHOTO (最大化)
 ========================= */
 .swiper {
-  flex: 7; /* ← 写真を大きく */
+  flex: 1;
   width: 100%;
   overflow: hidden;
   background: #f7f5f0;
@@ -51,40 +51,41 @@ html, body {
 }
 
 /* =========================
-   COUNTER（中段）
+   COUNTER（小さく固定）
 ========================= */
 .counter {
-  flex: 1;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
 
-  font-size: 15px;
-  background: rgba(0,0,0,0.05);
+  font-size: 13px;
+  color: #333;
+  background: rgba(0,0,0,0.04);
 }
 
 /* =========================
-   CAPTION（下段・少し低め）
+   CAPTION（可変フッター）
 ========================= */
 .caption-bar {
-  flex: 2; /* ← 少し小さめ */
-  display: flex;
-  align-items: flex-start; /* 上寄せで少し余白感 */
-
-  padding: 12px 14px 20px;
+  padding: 10px 14px;
   font-size: 16px;
   line-height: 1.4;
 
   background: rgba(255,255,255,0.95);
   border-top: 1px solid rgba(0,0,0,0.08);
 
-  /* 2行制限 */
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  /* 重要：高さ固定しない */
+  width: 100%;
+  box-sizing: border-box;
 
-  overflow: hidden;
   word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Safari微調整 */
+.safari .caption-bar {
+  line-height: 1.35;
 }
 
 /* =========================
@@ -92,7 +93,7 @@ html, body {
 ========================= */
 .nav-arrow {
   position: absolute;
-  top: 40%;
+  top: 45%;
   transform: translateY(-50%);
   font-size: 42px;
   color: #c7a86b;
@@ -142,7 +143,7 @@ function updateUI(i) {
   counterEl.textContent = `${i + 1} / ${captions.length || 0}`;
 }
 
-/* slides */
+/* build slides */
 function buildSlides(len) {
   slides.innerHTML = "";
 
@@ -165,7 +166,6 @@ function initSwiper() {
   if (swiper) swiper.destroy(true, true);
 
   swiper = new Swiper('.swiper', {
-
     loop: false,
     centeredSlides: true,
     slidesPerView: 1,
@@ -184,7 +184,7 @@ function initSwiper() {
   document.getElementById('next').onclick = () => swiper.slideNext();
 }
 
-/* load */
+/* load JSON */
 fetch('captions.json')
   .then(res => res.json())
   .then(data => {
@@ -196,7 +196,6 @@ fetch('captions.json')
 
     updateUI(0);
   });
-
 </script>
 
 </body>
