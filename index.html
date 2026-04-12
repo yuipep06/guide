@@ -78,7 +78,7 @@ html, body {
   border-top: 1px solid rgba(0,0,0,0.08);
 }
 
-/* ===== 丸ポチ（安定2段版・千鳥なし）===== */
+/* ===== 丸ポチ（最終安定版・重なり完全防止）===== */
 
 .swiper-pagination {
   position: absolute;
@@ -86,17 +86,17 @@ html, body {
 
   width: 100%;
 
-  display: grid;
-  grid-template-columns: repeat(10, auto);
-
+  display: flex;
+  flex-wrap: wrap;        /* ←2段OK */
   justify-content: center;
-  align-content: center;
+  align-items: center;
 
-  gap: 10px 8px;
+  gap: 8px 6px;
   padding: 8px 12px;
   box-sizing: border-box;
 }
 
+/* 通常 */
 .swiper-pagination-bullet {
   width: 8px;
   height: 8px;
@@ -104,9 +104,11 @@ html, body {
   background: #c7a86b;
   opacity: 0.35;
   border: 1.5px solid rgba(255,255,255,0.9);
-  transition: transform 0.2s ease;
+
+  flex: 0 0 auto;         /* ←超重要：潰れ防止 */
 }
 
+/* 現在地 */
 .swiper-pagination-bullet-active {
   background: #a8864a;
   opacity: 1;
