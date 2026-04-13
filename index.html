@@ -18,9 +18,6 @@ html, body {
   overflow: hidden;
 }
 
-/* =========================
-   MAIN LAYOUT
-========================= */
 .container {
   position: fixed;
   inset: 0;
@@ -28,9 +25,6 @@ html, body {
   flex-direction: column;
 }
 
-/* =========================
-   PHOTO (最大化)
-========================= */
 .swiper {
   flex: 1;
   width: 100%;
@@ -50,47 +44,28 @@ html, body {
   object-fit: contain;
 }
 
-/* =========================
-   COUNTER（小さく固定）
-========================= */
 .counter {
   height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-
   font-size: 13px;
   color: #333;
   background: rgba(0,0,0,0.04);
 }
 
-/* =========================
-   CAPTION（可変フッター）
-========================= */
 .caption-bar {
   padding: 10px 14px;
   font-size: 16px;
   line-height: 1.4;
-
   background: rgba(255,255,255,0.95);
   border-top: 1px solid rgba(0,0,0,0.08);
-
-  /* 重要：高さ固定しない */
   width: 100%;
   box-sizing: border-box;
-
   word-break: break-word;
   overflow-wrap: anywhere;
 }
 
-/* Safari微調整 */
-.safari .caption-bar {
-  line-height: 1.35;
-}
-
-/* =========================
-   ARROWS
-========================= */
 .nav-arrow {
   position: absolute;
   top: 45%;
@@ -143,24 +118,49 @@ function updateUI(i) {
   counterEl.textContent = `${i + 1} / ${captions.length || 0}`;
 }
 
-/* build slides */
-function buildSlides(len) {
+/* 画像ロード（キャッシュ対策付き） */
+function loadImage(src) {
+  return new Promise((resolve) => {
+    const img = new Image();
+
+    img.src = src + '?v=' + Date.now(); // キャッシュ回避
+
+    img.onload = () => resolve(img);
+    img.onerror = () => {
+      console.warn("画像読み込み失敗:", src);
+      resolve(null);
+    };
+  });
+}
+
+/* スライド生成（画像ロード待ち） */
+async function buildSlides(len) {
   slides.innerHTML = "";
 
+  const promises = [];
+
   for (let i = 1; i <= len; i++) {
+    promises.push(loadImage(`root${i}.jpg`));
+  }
+
+  const images = await Promise.all(promises);
+
+  images.forEach((img) => {
     const slide = document.createElement('div');
     slide.className = 'swiper-slide';
 
-    const img = document.createElement('img');
-    img.src = `root${i}.jpg`;
-    img.className = 'photo';
+    if (img) {
+      img.className = 'photo';
+      slide.appendChild(img);
+    } else {
+      slide.textContent = "画像読み込み失敗";
+    }
 
-    slide.appendChild(img);
     slides.appendChild(slide);
-  }
+  });
 }
 
-/* swiper */
+/* Swiper初期化 */
 function initSwiper() {
 
   if (swiper) swiper.destroy(true, true);
@@ -169,6 +169,8 @@ function initSwiper() {
     loop: false,
     centeredSlides: true,
     slidesPerView: 1,
+    observer: true,
+    observeParents: true,
 
     on: {
       init: function () {
@@ -184,17 +186,22 @@ function initSwiper() {
   document.getElementById('next').onclick = () => swiper.slideNext();
 }
 
-/* load JSON */
-fetch('captions.json')
+/* JSON読み込み */
+fetch('captions.json?v=' + Date.now()) // キャッシュ対策
   .then(res => res.json())
-  .then(data => {
+  .then(async data => {
 
     captions = Array.isArray(data) ? data : [];
 
-    buildSlides(captions.length);
+    await buildSlides(captions.length); // ←超重要
+
     initSwiper();
 
     updateUI(0);
+  })
+  .catch(err => {
+    console.error("JSON読み込みエラー:", err);
+    captionEl.textContent = "読み込みエラー";
   });
 </script>
 
